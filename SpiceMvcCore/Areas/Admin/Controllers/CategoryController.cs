@@ -69,6 +69,24 @@ namespace SpiceMvcCore.Areas.Admin.Controllers
             return View(category);
         }
 
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var category = await _db.Category.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -84,6 +102,24 @@ namespace SpiceMvcCore.Areas.Admin.Controllers
 
             return View(category);
         }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var dbCategory = await _db.Category.FindAsync(id);
+            
+            if(dbCategory == null)
+            {
+                return View();
+            }
+
+            _db.Category.Remove(dbCategory);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }
