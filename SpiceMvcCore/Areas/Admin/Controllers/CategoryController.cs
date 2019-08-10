@@ -54,5 +54,36 @@ namespace SpiceMvcCore.Areas.Admin.Controllers
 
             return View(category);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Category category)
+        {
+            if(ModelState.IsValid)
+            {
+                _db.Update(category);
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View(category);
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var category = await _db.Category.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
     }
 }
